@@ -1,0 +1,10 @@
+# Currency Rate Fetcher
+* The task is written in Java using Spring and Hibernate.
+* Description: This application works with the API of the National Bank on a given date and receives data on the exchange rate of currencies in XML format. Then it saves the received data to the database. Each entry in the database contains information about the currency, its code, the exchange rate and the date when the exchange was made.
+## API methods and service operations:
+##### API service:
+* CurrencyApiServiceImpl has a fetchCurrencyRates() method that accepts a date. This method sends an HTTP request to the external API of the National Bank based on the specified date. The resulting XML response is converted into a Java object of the Items class using the Jackson library. If errors occur when receiving data or converting it, the method throws an ExceptionHandler exception with the corresponding message and the HTTP response status 500 (Internal Server Error).
+
+#### Service: In CurrencyRateServiceImpl:
+* The saveCurrencyRates method takes an Items object containing a list of exchange rates for a certain date and saves them to the database. First, it uses the mapItemsToCurrencyRates method to convert a list of Items into a list of CurrencyRate items, each of which represents a separate currency and its exchange rate on a given date. Then it calls the saveAll method from the repository to save the list of CurrencyRate objects in the database and returns the number of successfully saved records. If a DataAccessException occurs when saving to the database, the method throws a ResponseStatusException exception.
+* The getCurrencies method takes the date and currency code as arguments and returns a CurrencyRate object from the database corresponding to the specified date and currency code. It uses the repository's findByCodeAndDate method to perform a database query.
